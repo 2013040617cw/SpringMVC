@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--开启注解扫描-->
+    <context:component-scan base-package="com.cuiwei"></context:component-scan>
+
+    <!--处理器映射器-处理器适配器  进行了功能的增强  支持json的读写-->
+    <mvc:annotation-driven/>
+
+
+    <!--视图解析器：ViewResolver-->
+    <bean id="ViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--success :解析逻辑的视图名   解析成具体的物理文件地址  /WEB-INF/pages/successjsp-->
+
+        <!--前缀-->
+        <property name="prefix" value="/WEB-INF/pages/"></property>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+
+    <!--自定义类型转换器配置-->
+    <bean id="ConversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.cuiwei.converter.DateConverter"></bean>
+            </set>
+        </property>
+    </bean>
+    <!--在springmvc配置文件中开启DefaultServlet处理静态资源    放行所有的静态资源-->
+    <mvc:default-servlet-handler/>
+
+    <!--配置文件上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--设置文件上传的最大值     5MB-->
+        <property name="maxInMemorySize" value="5242880"></property>
+        <!--设置文件上传时写入内存的最大值，如果小于这个参数不会生成临时文件 默认为10240-->
+        <property name="maxUploadSize" value="40960"></property>
+    </bean>
+
+    <!--配置自定义异常类-->
+    <bean id="globalExceptionResolver" class="com.cuiwei.exception.GlobalExceptionResolver"></bean>
+</beans>
